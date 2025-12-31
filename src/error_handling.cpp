@@ -9,7 +9,7 @@ void ErrorHandler::handle_error(Conditions conditions) {
     auto handled = handler(conditions.arg_list);
 
     if ( ! handled ) {
-        panic();
+        panic(conditions.type);
     }
 }
 
@@ -21,4 +21,8 @@ bool ErrorHandler::command_not_found(ArgList args) {
 
     return true;
 
+}
+
+void ErrorHandler::panic(ErrType err) {
+    exit(err);
 }

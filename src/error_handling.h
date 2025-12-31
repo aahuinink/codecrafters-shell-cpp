@@ -35,21 +35,18 @@ private:
     std::stack<Conditions> m_err_stack;
 
     // map of function handlers
-    std::unordered_map<ErrType, std::function<bool(ArgList)>> m_handle_map {
+    std::unordered_map<ErrType, std::function<bool(const ArgList)>> m_handle_map {
         { ErrType::INVALID_COMMAND, command_not_found },
     };
 
 public:
-
-    ErrorHandler();
-    ~ErrorHandler();
    
     // handles a custom error, panics as necessary
     void handle_error(const Conditions conditions);
     
 private:
 
-    static bool command_not_found(ArgList args);
+    static bool command_not_found(const ArgList args);
 
-    void panic();
+    void panic(ErrType err);
 };
