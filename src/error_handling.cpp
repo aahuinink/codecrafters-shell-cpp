@@ -17,7 +17,7 @@ bool ErrorHandler::command_not_found(ArgList args) {
 
     const auto& command = args.at(0);
     
-    std::cout << command << ": command not found" << "\n";
+    std::cout << command << ": command not found" << std::endl;
 
     return true;
 
