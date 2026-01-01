@@ -8,6 +8,7 @@
 
 // Error types
 enum ErrType {
+    NULL_ERR,
     INVALID_COMMAND,
 };
 
