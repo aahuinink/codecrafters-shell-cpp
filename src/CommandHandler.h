@@ -1,39 +1,39 @@
 #include <functional>
 #include <string>
 #include <unordered_map>
-#include "error_handling.h"
+#include "DataTypes.h"
+
+#pragma once
+
+using namespace DataTypes;
 
 class CommandHandler {
+    
+    using CmdHandlerFunction = std::function<Error(StrVec)>;
 
-    using ArgList = std::vector<std::string>;
+    // Maps a string to a handler function
+    using CmdHandlerMap = std::unordered_map<
+        std::string, 
+        CmdHandlerFunction
+        >;
 
 public:
 
-    struct Config {
-
-        // public members
-        std::string command;
-        ArgList args;
-
-        // constructor
-        Config(std::string cmd, std::string arg_list...) :
-            command(cmd),
-            args({arg_list})
-            {};
-
-    };
-    
-    // runs the command with the args provided in the config
-    ErrType run(Config config);
+    // runs the command and returns an error structure
+    Error run(Command& cmd);
 
 private:
-
-    std::unordered_map<std::string, std::function<ErrType(ArgList)>> m_command_map {
+    
+    // map of command handler functions corresponding to a particular shell command
+    CmdHandlerMap m_command_map {
+        { "pass", do_nothing },
         { "exit", exit_shell },
     };
+    
+    // exits the shell, does not actually return anything
+    static Error exit_shell(StrVec args);
 
-    ErrorHandler m_error_handler;
-
-    static ErrType exit_shell(ArgList args);
+    // does nothing
+    static Error do_nothing(StrVec args);
 
 };

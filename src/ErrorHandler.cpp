@@ -1,21 +1,19 @@
-#include "error_handling.h"
+#include "ErrorHandler.h"
 
-void ErrorHandler::handle_error(Conditions conditions) {        
+void ErrorHandler::handle_error(const Error err) {        
 
-    m_err_stack.push(conditions);
+    auto handler = m_handler_map.at(err.type);
 
-    auto handler = m_handle_map.at(conditions.type);
-
-    auto handled = handler(conditions.arg_list);
+    auto handled = handler(err.info);
 
     if ( ! handled ) {
-        panic(conditions.type);
+        panic(err.type);
     }
 }
 
-bool ErrorHandler::command_not_found(ArgList args) {
+bool ErrorHandler::command_not_found( StrVec info) {
 
-    const auto& command = args.at(0);
+    const auto& command = info.at(0);
     
     std::cout << command << ": command not found" << std::endl;
 
@@ -23,6 +21,6 @@ bool ErrorHandler::command_not_found(ArgList args) {
 
 }
 
-void ErrorHandler::panic(ErrType err) {
-    exit(err);
+void ErrorHandler::panic(Error::ErrType err_type) {
+    exit(err_type);
 }

@@ -1,53 +1,42 @@
 #include <array>
-#include <map>
-#include <stack>
 #include <functional>
 #include <string>
+#include <unordered_map>
 #include <vector>
 #include <iostream>
+#include "DataTypes.h"
 
-// Error types
-enum ErrType {
-    NULL_ERR,
-    INVALID_COMMAND,
-};
+#pragma once
 
+using namespace DataTypes;
 
 // error handler object
 class ErrorHandler {
-
-    using ArgList = std::vector<std::string>;
-
-public:
     
-    struct Conditions {
-        ErrType type;
-        ArgList arg_list;
+    using ErrHandlerFunc = std::function< bool ( const StrVec ) >;
 
-        Conditions(ErrType err_type, std::string params...) :
-            type(err_type),
-            arg_list({params})
-        {};
-    };
-
-private:
-
-    // stack of errors
-    std::stack<Conditions> m_err_stack;
+    using ErrHandlerMap = std::unordered_map<
+        Error::ErrType, 
+        ErrHandlerFunc
+        >;
 
     // map of function handlers
-    std::unordered_map<ErrType, std::function<bool(const ArgList)>> m_handle_map {
-        { ErrType::INVALID_COMMAND, command_not_found },
+    ErrHandlerMap m_handler_map {
+        { Error::ErrType::OK, ok },
+        { Error::ErrType::INVALID_COMMAND, command_not_found },
     };
 
 public:
-   
-    // handles a custom error, panics as necessary
-    void handle_error(const Conditions conditions);
+
+    // handles an error, panics as necessary
+    void handle_error(const Error err);
     
 private:
 
-    static bool command_not_found(const ArgList args);
+    static bool command_not_found(const StrVec err_info);
 
-    void panic(ErrType err);
+    static bool ok(const StrVec err_info) { return true; };
+
+    void panic(Error::ErrType err_type);
+
 };
