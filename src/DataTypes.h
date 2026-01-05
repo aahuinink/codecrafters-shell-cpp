@@ -11,19 +11,21 @@ namespace DataTypes {
     struct Command {
 
         std::string command;    // the command to run
+        std::string raw_args;
         StrVec args;            // list of associated args
         
         Command() = default;
 
-        Command(std::string cmd, StrVec&& args) :
+        Command(std::string&& cmd, std::string&& raw_args, StrVec&& args) :
             command(cmd),
+            raw_args(raw_args),
             args(args)
         {};
 
-        template <typename... Args>
-        Command(std::string&& cmd, Args&&... args) :
+        Command(std::string&& cmd) :
             command(cmd),
-            args( { static_cast<std::string>(args)... } )
+            raw_args(""),
+            args( { } )
             {};
 
     };

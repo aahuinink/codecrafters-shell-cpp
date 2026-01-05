@@ -1,5 +1,10 @@
 #include "Repl.h"
 #include "DataTypes.h"
+#include <cstddef>
+#include <ios>
+#include <iostream>
+#include <iterator>
+#include <limits>
 #include <sstream>
 
 void Repl::run() {
@@ -34,12 +39,23 @@ Command Repl::parse_input(std::string& input) {
 
         Command cmd;
 
+        auto cmd_string_len = input.find_first_of(" \n\r\t\v\f");
+
+        if ( cmd_string_len == std::string::npos ) {
+            cmd_string_len = input.length();
+        }
+
+        cmd.command = input.substr(0, cmd_string_len);
+
+        input.erase(0, cmd_string_len + 1);
+
+        cmd.raw_args = input;
+
         std::istringstream stream(input);
 
         std::string arg;
 
-        stream >> cmd.command;
-
+        //create the vector of args
         while ( stream >> arg ) {
             cmd.args.push_back(arg);
         }
@@ -52,7 +68,6 @@ Command Repl::parse_input(std::string& input) {
 bool Repl::Helpers::trim(std::string &str) {
 
     auto start_index = str.find_first_not_of(" \t\r\n\f\v");
-    auto end_index = str.find_last_not_of(" \t\r\f\v\n");
 
     // if all whitespace
     if ( start_index == std::string::npos ) {
@@ -61,15 +76,7 @@ bool Repl::Helpers::trim(std::string &str) {
 
     } else {
         
-        // trim end, then beginning
-        if ( end_index != str.size() - 1 ) {
-            str.erase(end_index + 1);
-        }
-
-        if ( start_index != 0 ) {
-            str.erase(0, start_index);
-        }
-
+        str.erase(0, start_index);
         return false;
 
     }
