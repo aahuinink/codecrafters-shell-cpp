@@ -1,10 +1,6 @@
 #include "Repl.h"
 #include "DataTypes.h"
-#include <cstddef>
-#include <ios>
 #include <iostream>
-#include <iterator>
-#include <limits>
 #include <sstream>
 
 void Repl::run() {
