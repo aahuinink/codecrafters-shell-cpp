@@ -23,7 +23,7 @@ private:
     // @brief           Creates a command from user input
     // @param   input   The user input to parse
     // @returns         The command object to run
-    Command parse_input(std::string& input);
+    UserInput parse_input(std::string&& raw_input);
 
     struct Helpers {
 

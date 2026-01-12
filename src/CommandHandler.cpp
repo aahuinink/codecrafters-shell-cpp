@@ -1,44 +1,91 @@
 #include "CommandHandler.h"
 #include "DataTypes.h"
-#include <functional>
-#include <stdexcept>
+#include <cstdio>
+#include <cstdlib>
 #include <iostream>
 #include <string>
 
-Error CommandHandler::run(Command& cmd) {
+using namespace DataTypes;
+
+CommandHandler::Command CommandHandler::command_from( UserInput&& input ) noexcept {
     
-    CmdHandlerFunction handler;
+    CommandHandler::Command cmd;
 
-    try {
+    cmd.args = std::move( input.args );
+    cmd.raw_args = std::move( input.raw_args );
+    cmd.name = std::move( input.command );
 
-        handler = m_command_map.at(cmd.command);
+    auto it = m_builtins_map.find( cmd.name );
 
-    } catch (std::out_of_range) {
+    if ( it != m_builtins_map.end() ) {
 
-        Error err( Error::ErrType::INVALID_COMMAND, StrVec{ std::move(cmd.command) } );
+        cmd.handler = it->second;
+        cmd.type = Command::Type::BUILTIN;
 
-        cmd.command = "";
-
-        return err;
+    } else {
+    
+        cmd.handler = exit_shell;               // exit if we try to execute an unrecognized command
+        cmd.type = Command::Type::UNRECOGNIZED;
 
     }
 
-    return handler(cmd.raw_args, cmd.args);
-
+    return cmd;
 }
 
-Error CommandHandler::exit_shell(const std::string& raw_args, const StrVec& args) {
-    exit(0);
+Error CommandHandler::evaluate( UserInput&& input ) {
+    
+    Command cmd = command_from( std::move(input) );
+
+    if ( cmd.type == Command::Type::UNRECOGNIZED ) {
+
+        return Error(Error::ErrType::INVALID_COMMAND, cmd.name );
+    }
+
+    return cmd.handler(cmd);
+
 };
 
-Error CommandHandler::do_nothing(const std::string& raw_args, const StrVec& args) {
-    return Error(Error::ErrType::OK);
+Error CommandHandler::exit_shell(const Command& cmd) {
+    exit(0);
 }
 
-Error CommandHandler::echo(const std::string& raw_args, const StrVec& args) {
-    
-    std::cout << raw_args << std::endl;
+Error CommandHandler::do_nothing(const Command& cmd) {
+    return Error( Error::ErrType::OK );
+}
 
-    return Error(Error::ErrType::OK);
+Error CommandHandler::echo(const Command& cmd) {
 
+    std::cout << cmd.raw_args << std::endl;
+
+    return Error( Error::ErrType::OK );
+
+}
+
+Error CommandHandler::type(const Command& cmd) {
+
+    if ( cmd.args.empty() ) {
+
+        std::cerr << "Usage: type <command>\n\tPrints the type of the specified command." << std::endl;
+
+        return Error( Error::ErrType::OK );
+
+    }
+
+    auto builtin_map = get_builtins();
+
+    auto command_to_type = cmd.args[0];
+
+    auto it = builtin_map.find( command_to_type );
+
+    if ( it != builtin_map.end() ) {
+
+        std::cout << command_to_type << " is a shell builtin" << std::endl;
+
+    } else {
+
+        std::cout << command_to_type << ": not found" << std::endl;
+
+    }
+
+    return Error( Error::ErrType::OK );
 }

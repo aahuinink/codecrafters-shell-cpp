@@ -8,22 +8,22 @@ namespace DataTypes {
     using StrVec = std::vector<std::string>;
 
     // Represents a command, created by the input parser
-    struct Command {
+    struct UserInput {
 
-        std::string command;    // the command to run
-        std::string raw_args;
         StrVec args;            // list of associated args
+        std::string command;    // the command to run
+        std::string raw_args;   // the raw input
         
-        Command() = default;
+        UserInput() = default;
 
-        Command(std::string&& cmd, std::string&& raw_args, StrVec&& args) :
-            command(cmd),
-            raw_args(raw_args),
-            args(args)
+        UserInput(std::string&& cmd, std::string&& raw_args, StrVec&& args) :
+            command(std::move(cmd)),
+            raw_args(std::move(raw_args)),
+            args(std::move(args))
         {};
 
-        Command(std::string&& cmd) :
-            command(cmd),
+        UserInput(std::string&& cmd) :
+            command(std::move(cmd)),
             raw_args(""),
             args( { } )
             {};
@@ -42,7 +42,7 @@ namespace DataTypes {
 
         Error() = default;
 
-        Error(ErrType err_type, StrVec&& additional_info) :
+        Error(ErrType err_type, StrVec additional_info) :
             type(err_type),
             info(additional_info)
         {};

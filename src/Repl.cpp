@@ -11,56 +11,60 @@ void Repl::run() {
         std::cout << "$ ";
 
         // get user input
-        std::string user_input;
-        std::getline(std::cin, user_input);
+        std::string raw_input;
+        std::getline(std::cin, raw_input);
 
-        Command cmd = parse_input(user_input);
+        UserInput parsed_input = parse_input( std::move(raw_input) );
 
-        Error err = m_cmd_handler.run(cmd);
+        Error err = m_cmd_handler.evaluate( std::move(parsed_input) );
 
         m_err_handler.handle_error(err);
 
     }
 }
 
-Command Repl::parse_input(std::string& input) {
+// @brief       Parses some raw input into a UserInput object
+// @return      The created UserInput object
+UserInput Repl::parse_input(std::string&& raw_input) {
 
-    bool all_whitespace = Helpers::trim(input);
+    bool all_whitespace = Helpers::trim(raw_input);
 
     if ( all_whitespace ) {
         
-        return Command("pass");
+        return UserInput("pass");
         
     } else {
 
-        Command cmd;
+        UserInput parsed_input;
 
-        auto cmd_string_len = input.find_first_of(" \n\r\t\v\f");
+        auto cmd_string_len = raw_input.find_first_of(" \n\r\t\v\f");   // find the end of the first expression in the input
 
         if ( cmd_string_len == std::string::npos ) {
-            cmd_string_len = input.length();
+            cmd_string_len = raw_input.length();
         }
 
-        cmd.command = input.substr(0, cmd_string_len);
+        parsed_input.command = raw_input.substr(0, cmd_string_len);
 
-        input.erase(0, cmd_string_len + 1);
+        raw_input.erase(0, cmd_string_len + 1);
 
-        cmd.raw_args = input;
+        parsed_input.raw_args = raw_input;
 
-        std::istringstream stream(input);
+        std::istringstream stream(raw_input);
 
         std::string arg;
 
         //create the vector of args
         while ( stream >> arg ) {
-            cmd.args.push_back(arg);
+            parsed_input.args.push_back(arg);
         }
         
-        return cmd;
+        return parsed_input;
 
     }
 }
 
+// @brief       Removes all leading whitespace from a string
+// @return      Returns true if the string is all whitespace, false if not
 bool Repl::Helpers::trim(std::string &str) {
 
     auto start_index = str.find_first_not_of(" \t\r\n\f\v");
