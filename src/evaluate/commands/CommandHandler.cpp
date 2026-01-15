@@ -37,7 +37,6 @@ Error CommandHandler::evaluate( UserInput&& input ) {
     Command cmd = command_from( std::move(input) );
 
     if ( cmd.type == Command::Type::UNRECOGNIZED ) {
-
         return Error(Error::ErrType::INVALID_COMMAND, cmd.name );
     }
 
