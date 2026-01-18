@@ -1,6 +1,4 @@
-#include "CommandHandler.h"
-#include "DataTypes.h"
-#include <cstdio>
+#include <handlers/CommandHandler.h>
 #include <cstdlib>
 #include <iostream>
 #include <string>

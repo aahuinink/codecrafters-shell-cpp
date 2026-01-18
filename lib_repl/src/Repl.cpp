@@ -1,9 +1,28 @@
-#include "Repl.h"
-#include "DataTypes.h"
+#include <Repl.h>
+#include <handlers/CommandHandler.h>
+#include <handlers/ErrorHandler.h>
+#include <common/DataTypes.h>
 #include <iostream>
 #include <sstream>
 
+using namespace DataTypes;
+
+namespace  Helpers {
+
+    // @brief           Creates a command from user input
+    // @param   input   The user input to parse
+    // @returns         The command object to run
+    UserInput parse_input(std::string&& raw_input);
+
+    // @brief       Removes all leading whitespace from a string
+    // @return      Returns true if the string is all whitespace, false if not
+    bool trim(std::string &str);
+}
+
 void Repl::run() {
+
+    CommandHandler cmd_handler;
+    ErrorHandler err_handler;
 
     while (true) {
 
@@ -14,18 +33,18 @@ void Repl::run() {
         std::string raw_input;
         std::getline(std::cin, raw_input);
 
-        UserInput parsed_input = parse_input( std::move(raw_input) );
+        UserInput parsed_input = Helpers::parse_input( std::move(raw_input) );
 
-        Error err = m_cmd_handler.evaluate( std::move(parsed_input) );
+        Error err = cmd_handler.evaluate( std::move(parsed_input) );
 
-        m_err_handler.handle_error(err);
+        err_handler.handle_error(err);
 
     }
 }
 
 // @brief       Parses some raw input into a UserInput object
 // @return      The created UserInput object
-UserInput Repl::parse_input(std::string&& raw_input) {
+UserInput Helpers::parse_input(std::string&& raw_input) {
 
     bool all_whitespace = Helpers::trim(raw_input);
 
@@ -65,7 +84,7 @@ UserInput Repl::parse_input(std::string&& raw_input) {
 
 // @brief       Removes all leading whitespace from a string
 // @return      Returns true if the string is all whitespace, false if not
-bool Repl::Helpers::trim(std::string &str) {
+bool Helpers::trim(std::string &str) {
 
     auto start_index = str.find_first_not_of(" \t\r\n\f\v");
 

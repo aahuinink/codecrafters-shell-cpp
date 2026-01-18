@@ -1,17 +1,13 @@
-cmake_minimum_required(VERSION 3.13)
+cmake_minimum_required(VERSION 3.23)
 
-project(shell-starter-cpp)
-
-file(GLOB_RECURSE SOURCE_FILES src/*.cpp src/*.hpp src/*.h)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set(CMAKE_CXX_STANDARD 23) # Enable the C++23 standard
 
-set(CMAKE_C_COMPILER gcc)
+project(myshell)
 
-set(CMAKE_CXX_COMPILER g++)
+add_executable(shell src/main.cpp)
 
-set(CMAKE_MAKE_PROGRAM make)
+add_subdirectory(lib_repl)
 
-add_executable(shell ${SOURCE_FILES})
-
-target_link_libraries(shell PRIVATE readline)
+target_link_libraries(shell PRIVATE repl)
