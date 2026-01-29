@@ -12,7 +12,7 @@ Error CommandHandler::evaluate( UserInput&& input ) {
         return Error(Error::ErrType::INVALID_COMMAND, cmd.name );
     }
 
-    return cmd.handler(cmd);
+    return cmd.handler.builtin(cmd);
 
 };
 

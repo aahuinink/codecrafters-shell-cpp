@@ -1,10 +1,11 @@
 #pragma once
 #include "Command.h"
+#include <functional>
 
 // Maps a string to a handler function
 using CmdHandlerMap = std::unordered_map<
     std::string, 
-    Command::HandlerFunction
+    std::function<Error (const Command&)>
 >;
 
 namespace Builtins {
@@ -20,7 +21,11 @@ namespace Builtins {
 
     // prints the type of command (builtin, executable, or unrecognized)
     Error type(const Command& cmd);
+
+    // creates a process
+    Error exec(const Command& cmd);
     
+    // returns a map of builtin functions
     const CmdHandlerMap& get() noexcept;
 
 }

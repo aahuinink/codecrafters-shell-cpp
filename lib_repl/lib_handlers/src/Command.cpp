@@ -1,7 +1,8 @@
 #include "Command.h"
 #include "Builtins.h"
+#include "Executable.h"
 
-Command Command::from( UserInput&& input ) noexcept {
+Command Command::from( UserInput&& input ) {
 
     Command cmd;
 
@@ -14,13 +15,18 @@ Command Command::from( UserInput&& input ) noexcept {
     auto it = builtins.find( cmd.name );
 
     if ( it != builtins.end() ) {
-
-        cmd.handler = it->second;
+    
+        cmd.handler = Handler{ it->second, {} };
         cmd.type = Command::Type::BUILTIN;
+
+    } else if ( auto executable = Executable::from( cmd.name ) ) {
+        
+        cmd.handler = Handler{ Builtins::exec, executable };
+        cmd.type = Command::Type::EXECUTABLE;
 
     } else {
     
-        cmd.handler = Builtins::exit_shell;               // exit if we try to execute an unrecognized command
+        cmd.handler = Handler{ Builtins::exit_shell, {} };               // exit if we try to execute an unrecognized command
         cmd.type = Command::Type::UNRECOGNIZED;
 
     }

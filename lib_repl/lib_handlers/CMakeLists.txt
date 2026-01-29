@@ -6,9 +6,10 @@ target_sources(handlers
         src/ErrorHandler.cpp
         src/Command.cpp
         src/Builtins.cpp
+        src/Executable.cpp
     PRIVATE FILE_SET HEADERS
     BASE_DIRS src/
-    FILES src/Command.h src/Builtins.h
+    FILES src/Command.h src/Builtins.h src/Executable.h
 )
 
 target_include_directories(handlers

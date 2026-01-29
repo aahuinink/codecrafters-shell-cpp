@@ -1,4 +1,6 @@
 #include "Builtins.h"
+#include "Executable.h"
+#include "common/DataTypes.h"
 #include <iostream>
 
 Error Builtins::exit_shell(const Command& cmd) {
@@ -19,6 +21,7 @@ Error Builtins::echo(const Command& cmd) {
 
 Error Builtins::type(const Command& cmd) {
 
+    // if no args are provided
     if ( cmd.args.empty() ) {
 
         std::cout << "Usage: type <command>\n\tPrints the type of the specified command." << std::endl;
@@ -36,6 +39,10 @@ Error Builtins::type(const Command& cmd) {
 
         std::cout << command_to_type << " is a shell builtin" << std::endl;
 
+    } else if ( auto executable = Executable::from( command_to_type )) {
+
+        std::cout << command_to_type << " is " << executable->path << std::endl;
+
     } else {
 
         std::cout << command_to_type << ": not found" << std::endl;
@@ -45,6 +52,9 @@ Error Builtins::type(const Command& cmd) {
     return Error( Error::ErrType::OK );
 }
 
+Error Builtins::exec(const Command &cmd) {
+    return Error( Error::ErrType::OK );
+}
 
 const CmdHandlerMap& Builtins::get() noexcept {
 
@@ -54,6 +64,7 @@ const CmdHandlerMap& Builtins::get() noexcept {
             { "exit", exit_shell },
             { "echo", echo },
             { "type", type },
+            { "exec", exec },
         };
 
         return builtin_commands;

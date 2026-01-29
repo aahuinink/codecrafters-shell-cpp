@@ -13,4 +13,4 @@ target_include_directories(repl
         ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
-target_link_libraries(repl PRIVATE common handlers)
+target_link_libraries(repl PUBLIC common handlers)

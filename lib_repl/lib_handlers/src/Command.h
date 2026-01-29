@@ -1,12 +1,17 @@
 #pragma once
+#include "Executable.h"
 #include <common/DataTypes.h>
 #include <functional>
+#include <optional>
 
 using namespace DataTypes;
 
 struct Command {
 
-    using HandlerFunction = std::function<Error(const Command&)>;
+    struct Handler {
+        std::function<Error(const Command&)> builtin;
+        std::optional<Executable> executable;
+    };
 
     enum Type {
         BUILTIN,
@@ -17,11 +22,10 @@ struct Command {
     StrVec args;
     std::string raw_args;
     std::string name;
-    HandlerFunction handler;
+    Handler handler;
     Type type;
 
     // factory function that creates a command from a moved-from UserInput object
-    static Command from( UserInput&& input ) noexcept;
+    static Command from( UserInput&& input );
 
 };
-
