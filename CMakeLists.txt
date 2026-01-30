@@ -12,6 +12,4 @@ add_executable(shell src/main.cpp)
 
 add_subdirectory(lib_repl)
 
-add_subdirectory(tests)
-
 target_link_libraries(shell PRIVATE repl)

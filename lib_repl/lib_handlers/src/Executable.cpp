@@ -2,11 +2,11 @@
 #include <cstddef>
 #include <cstdlib>
 #include <filesystem>
-#include <iterator>
 #include <optional>
 #include <string>
 #include <string_view>
-#include <vector>
+#include <iostream>
+#include <system_error>
 
 std::optional<Executable> Executable::from( const std::string& executable_path ) {
 
@@ -61,11 +61,11 @@ std::optional<Executable> Executable::from_path( const std::string& executable_n
     }
 
     // ease of use things for the next section
-    using it_dir = std::filesystem::recursive_directory_iterator;
+    using it_dir = std::filesystem::directory_iterator;
     namespace fs = std::filesystem;
     using std::filesystem::perms;
     constexpr auto any_exec_perms = perms::owner_exec | perms::group_exec | perms::others_exec ;
-    auto check_entry = [&executable_name](fs::directory_entry& entry) {
+    auto check_entry = [&executable_name](const fs::directory_entry& entry) {
         return 
                 ( entry.path().filename() == executable_name ) &&
                 ( entry.is_regular_file() ) &&
@@ -109,17 +109,21 @@ std::optional<Executable> Executable::from_path( const std::string& executable_n
         }
 
         // otherwise, iterate through everything in the directory
+        std::error_code ec;
+        auto dir_entry = fs::begin(it_dir(path_var_entry, ec));
 
-        it_dir dir_on_path( path_var_entry );
+        for (; dir_entry != fs::end(it_dir(path_var_entry)); dir_entry.increment(ec)) {
 
-        for ( auto dir_entry : dir_on_path ) {
+            // ignore filesystem errors
+            if ( ec ) {
+                continue;
+            }
 
-            auto possible_exec = check_entry(dir_entry);
+            auto possible_exec = check_entry(*dir_entry);
 
             if ( possible_exec ) {
                 return Executable{ *possible_exec, Executable::Location::SYS_PATH };
             }
-
         }
     }
 
