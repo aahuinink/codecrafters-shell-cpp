@@ -5,7 +5,6 @@
 #include <optional>
 #include <string>
 #include <string_view>
-#include <iostream>
 #include <system_error>
 
 std::optional<Executable> Executable::from( const std::string& executable_path ) {
@@ -76,7 +75,7 @@ std::optional<Executable> Executable::from_path( const std::string& executable_n
 
     size_t previous_pos = 0;
     size_t current_pos = 0;
-    constexpr char delim = ';';
+    constexpr char delim = ':';
 
     
     // parse each path variable into a vector of directory iterators
