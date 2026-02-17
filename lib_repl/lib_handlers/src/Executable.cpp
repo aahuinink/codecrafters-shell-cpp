@@ -100,7 +100,7 @@ std::optional<Executable> Executable::from_path( const std::string& executable_n
             auto possible_exec = check_entry(path_var_entry);
 
             if ( possible_exec ) {
-                return Executable { *possible_exec, Executable::Location::SYS_PATH };
+                return Executable { possible_exec->string(), Executable::Location::SYS_PATH };
             }
 
             // short circuit if not
@@ -121,7 +121,7 @@ std::optional<Executable> Executable::from_path( const std::string& executable_n
             auto possible_exec = check_entry(*dir_entry);
 
             if ( possible_exec ) {
-                return Executable{ *possible_exec, Executable::Location::SYS_PATH };
+                return Executable{ possible_exec->string(), Executable::Location::SYS_PATH };
             }
         }
     }

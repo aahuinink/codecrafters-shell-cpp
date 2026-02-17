@@ -1,5 +1,4 @@
 #pragma once
-#include <filesystem>
 #include <optional>
 #include <string>
 
@@ -11,7 +10,7 @@ struct Executable {
         SYS_PATH
     };
 
-    std::filesystem::path path;
+    std::string path;
     Location loc;
     
     // constructs an Executable object from a string specifying the executable name (if on PATH) or the absolute/relative filepath of the executable.
