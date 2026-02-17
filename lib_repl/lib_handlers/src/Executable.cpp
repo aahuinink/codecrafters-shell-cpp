@@ -68,7 +68,7 @@ std::optional<Executable> Executable::from_path( const std::string& executable_n
         return 
                 ( entry.path().filename() == executable_name ) &&
                 ( entry.is_regular_file() ) &&
-                ( entry.status().permissions() | any_exec_perms ) != perms::none ?
+                ( entry.status().permissions() & any_exec_perms ) != perms::none ?
 
             std::optional( entry.path() ) : std::nullopt;
     };
