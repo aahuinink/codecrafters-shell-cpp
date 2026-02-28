@@ -17,4 +17,6 @@ target_include_directories(handlers
         ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
-target_link_libraries(handlers PRIVATE common)
+find_package(Boost REQUIRED COMPONENTS process)
+
+target_link_libraries(handlers PRIVATE common Boost::process)

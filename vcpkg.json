@@ -1,3 +1,8 @@
 {
-    "dependencies": []
+    "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/vcpkg.schema.json",
+    "name": "cc-shell",
+    "version": "1.0.0",
+    "dependencies": [
+        "boost-process"
+    ]
 }
