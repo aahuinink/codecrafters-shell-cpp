@@ -74,7 +74,7 @@ Error exec(const Command &cmd) {
     pid_t child_pid = fork();
 
     if (child_pid == 0) {
-        execv(cmd.handler.executable->path.c_str(), argv.data() );
+        execv(cmd.handler.executable.path.c_str(), argv.data() );
     }
 
     int child_status;

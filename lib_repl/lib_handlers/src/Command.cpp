@@ -21,7 +21,7 @@ Command Command::from( UserInput&& input ) {
 
     } else if ( auto executable = Executable::from( cmd.name ) ) {
         
-        cmd.handler = Handler{ Builtins::exec, executable };
+        cmd.handler = Handler{ Builtins::exec, *executable };
         cmd.type = Command::Type::EXECUTABLE;
 
     } else {

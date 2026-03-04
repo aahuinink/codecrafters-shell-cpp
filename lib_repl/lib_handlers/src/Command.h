@@ -2,7 +2,6 @@
 #include "Executable.h"
 #include <common/DataTypes.h>
 #include <functional>
-#include <optional>
 
 using namespace DataTypes;
 
@@ -10,7 +9,7 @@ struct Command {
 
     struct Handler {
         std::function<Error(const Command&)> builtin;
-        std::optional<Executable> executable;
+        Executable executable;
     };
 
     enum Type {
