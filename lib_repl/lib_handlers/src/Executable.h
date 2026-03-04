@@ -4,19 +4,17 @@
 
 struct Executable {
 
-    enum Location {
+    enum Source {
         ABS,
         REL,
         SYS_PATH
     };
 
     std::string path;
-    Location loc;
+    Source loc;
     
     // constructs an Executable object from a string specifying the executable name (if on PATH) or the absolute/relative filepath of the executable.
     static std::optional<Executable> from( const std::string& executable_path );
-
-    // implement function call operator TODO
 
 private:
 

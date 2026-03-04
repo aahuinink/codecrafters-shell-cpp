@@ -6,42 +6,51 @@
 #include <string>
 #include <string_view>
 #include <system_error>
+#include <unistd.h>
 
 std::optional<Executable> Executable::from( const std::string& executable_path ) {
 
     // determine location
-    Executable::Location loc;
+    Executable::Source loc;
     auto first_char = executable_path.front();
     
     if ( (first_char == '/') | (first_char == '\\') ) {
 
-        loc = Executable::Location::ABS;
+        loc = Executable::Source::ABS;
 
     } else if ( first_char == '.' ) {
 
-        loc = Executable::Location::REL;
+        loc = Executable::Source::REL;
 
     } else {
 
-        loc = Executable::Location::SYS_PATH;
+        loc = Executable::Source::SYS_PATH;
 
     }
 
     switch ( loc ) {
 
-        case Executable::Location::ABS:
+        case Executable::Source::ABS:
             return from_absolute( executable_path );
         
-        case Executable::Location::REL:
+        case Executable::Source::REL:
             return from_relative( executable_path );
 
-        case Executable::Location::SYS_PATH:
+        case Executable::Source::SYS_PATH:
             return from_path( executable_path );
 
     }
 
     return {};
 }
+
+void run( std::istream stdin, std::ostream stdout, std::ostream stderr ) {
+
+    
+
+}
+
+/* PRIVATE */
 
 std::optional<Executable> Executable::from_absolute( const std::string& executable_path ) {
     return {};
@@ -100,7 +109,7 @@ std::optional<Executable> Executable::from_path( const std::string& executable_n
             auto possible_exec = check_entry(path_var_entry);
 
             if ( possible_exec ) {
-                return Executable { possible_exec->string(), Executable::Location::SYS_PATH };
+                return Executable { possible_exec->string(), Executable::Source::SYS_PATH };
             }
 
             // short circuit if not
@@ -121,7 +130,7 @@ std::optional<Executable> Executable::from_path( const std::string& executable_n
             auto possible_exec = check_entry(*dir_entry);
 
             if ( possible_exec ) {
-                return Executable{ possible_exec->string(), Executable::Location::SYS_PATH };
+                return Executable{ possible_exec->string(), Executable::Source::SYS_PATH };
             }
         }
     }
