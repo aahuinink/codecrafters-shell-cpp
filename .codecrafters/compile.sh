@@ -9,5 +9,5 @@
 set -e # Exit on failure
 
 rm -rf ./build
-cmake -B build -S . -DCMAKE_TOOLCHAIN_FILE=${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake
+cmake -B build -S .
 cmake --build ./build
