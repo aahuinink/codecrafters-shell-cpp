@@ -64,7 +64,7 @@ Error exec(const Command &cmd) {
     std::vector<char*> argv;
     argv.reserve( cmd.args.size() + 2 );
 
-    argv.push_back( const_cast<char*>( cmd.handler.executable->path.c_str() ));
+    argv.push_back( const_cast<char*>( cmd.name.c_str() ));
 
     for ( auto& arg : cmd.args )
         argv.push_back( const_cast<char*>( arg.c_str() ) );
@@ -74,7 +74,7 @@ Error exec(const Command &cmd) {
     pid_t child_pid = fork();
 
     if (child_pid == 0) {
-        execv(argv[0], argv.data() );
+        execv(cmd.handler.executable->path.c_str(), argv.data() );
     }
 
     int child_status;
