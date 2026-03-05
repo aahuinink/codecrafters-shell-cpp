@@ -27,7 +27,7 @@ void Repl::run() {
     while (true) {
 
         // print the prompt
-        std::cout << "$ ";
+        std::cout << "$ " << std::flush;
 
         // get user input
         std::string raw_input;

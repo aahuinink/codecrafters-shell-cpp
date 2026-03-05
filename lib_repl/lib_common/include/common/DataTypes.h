@@ -35,6 +35,9 @@ namespace DataTypes {
         enum ErrType {
             OK,
             INVALID_COMMAND,
+            FORK_FAILED,
+            EXEC_FAILED,
+            OS
         };
 
         ErrType type;
