@@ -4,6 +4,7 @@
 #include <cerrno>
 #include <csignal>
 #include <cstdio>
+#include <cstdlib>
 #include <cstring>
 #include <fcntl.h>
 #include <filesystem>
@@ -162,8 +163,7 @@ Error exec(const Command &cmd) {
 }
 
 Error pwd(const Command& cmd) {
-    std::cout << std::filesystem::current_path().root_path() << std::endl;
-
+    std::cout << std::filesystem::current_path().c_str() << std::endl; 
     return Error ( Error::ErrType::OK );
 }
 
@@ -176,6 +176,7 @@ const CmdHandlerMap& get() noexcept {
             { "echo", echo },
             { "type", type },
             { "exec", exec },
+            { "pwd",  pwd  }
         };
 
         return builtin_commands;
