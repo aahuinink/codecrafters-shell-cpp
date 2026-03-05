@@ -111,7 +111,7 @@ Error exec(const Command &cmd) {
 
             argv.push_back(nullptr);
 
-            execv( cmd.handler.executable.path.c_str(), const_cast<char**>( argv.data() ) );
+            execv( cmd.handler.executable.path.c_str(), argv.data() ) ;
 
             // child write end closes here if exec succeeds, otherwise it still exists and we can write errors to it
             write( pipefds[1], &errno, sizeof( errno ) );
@@ -149,6 +149,7 @@ Error exec(const Command &cmd) {
                     waitpid( child_pid, &status, 0);
 
                     // if the call to wait fails because of something other than the child exiting before the call
+                    // (we know the child exists before this point bc we've checked the return of fork())
                     if ( errno && ( errno != ECHILD ) ) {
                         std::cerr << "Failed to wait for child process: " << std::strerror(errno) << std::endl;
                     }
