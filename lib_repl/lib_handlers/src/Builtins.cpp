@@ -6,6 +6,7 @@
 #include <cstdio>
 #include <cstring>
 #include <fcntl.h>
+#include <filesystem>
 #include <iostream>
 #include <linux/close_range.h>
 #include <poll.h>
@@ -158,6 +159,12 @@ Error exec(const Command &cmd) {
             
     }
     return Error( Error::ErrType::OK);
+}
+
+Error pwd(const Command& cmd) {
+    std::cout << std::filesystem::current_path().root_path() << std::endl;
+
+    return Error ( Error::ErrType::OK );
 }
 
 const CmdHandlerMap& get() noexcept {
